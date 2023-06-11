@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: "Segoe UI", "Verdana", sans-serif;
+}
+
+.header {
+  font-family: "Cabin", "Segoe UI", sans-serif;
+  background-color: rgb(175, 241, 175);
+}
+
+main .title {
+  font-family: "Cabin", "Segoe UI", sans-serif;
+}
+main .main-info .tabla-container .info-card {
+  width: 100%;
+  padding: 15px;
+  background-color: rgb(198, 202, 235);
+  border-radius: 5px;
+}
+main .main-info .tabla-container .info-card .cards-container {
+  width: 100%;
+}
+main .main-info .form-container .form-registros .radio-container {
+  margin-bottom: 10px;
+}/*# sourceMappingURL=index.css.map */
