@@ -118,7 +118,6 @@ function actualizarRegistros(array){
     </table>`;
 
     $("#tablaRegistros").html(table);
-    alert("Actualizar tabla")
 };
 
 function limpiarAlerta(){

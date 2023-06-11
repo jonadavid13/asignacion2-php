@@ -1,0 +1,2 @@
+a:5:{s:6:"nombre";s:8:"Jonathan";s:6:"cedula";s:9:"123123123";s:15:"notaMatematicas";s:2:"20";s:10:"notaFisica";s:2:"15";s:16:"notaProgramacion";s:2:"07";}
+a:5:{s:6:"nombre";s:6:"Samuel";s:6:"cedula";s:6:"123123";s:15:"notaMatematicas";s:2:"19";s:10:"notaFisica";s:2:"15";s:16:"notaProgramacion";s:2:"18";}
