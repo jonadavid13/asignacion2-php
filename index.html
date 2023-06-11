@@ -9,7 +9,7 @@
     <script src="assets/js/index.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 </head>
-<body>
+<body onload="resetDatos()">
     <header class="header py-2 px-3">
         <h2>Alumnos</h2>
     </header>
@@ -43,7 +43,7 @@
                         <article class="d-flex cards-container justify-content-between mb-2">
 
                             <div class="card card-math d-flex flex-column p-2">
-                                <h4>Matemáticas</h4>
+                                <h4 class="mb-2">Matemáticas</h4>
                                 <div class="d-flex">
                                     <span class="fw-semibold me-1">Nota promedio: </span>
                                     <div id="promedioMath">0</div>
@@ -63,7 +63,7 @@
                             </div>
 
                             <div class="card card-fisica d-flex flex-column p-2">
-                                <h4>Física</h4>
+                                <h4 class="mb-2">Física</h4>
                                 <div class="d-flex">
                                     <span class="fw-semibold me-1">Nota promedio: </span>
                                     <div id="promedioFisica">0</div>
@@ -83,7 +83,7 @@
                             </div>
 
                             <div class="card card-programacion d-flex flex-column p-2">
-                                <h4>Programación</h4>
+                                <h4 class="mb-2">Programación</h4>
                                 <div class="d-flex">
                                     <span class="fw-semibold me-1">Nota promedio: </span>
                                     <div id="promedioProgramacion">0</div>
@@ -105,15 +105,15 @@
 
                         <div class="d-flex">
                             <span class="fw-semibold me-1">Cantidad de alumnos que aprobaron todas las materias: </span>
-                            <div id="span-aprobadosMax">0</div>
+                            <div id="aprobadosTodas">0</div>
                         </div>
                         <div class="d-flex">
                             <span class="fw-semibold me-1">Cantidad de alumnos que aprobaron una sola materia: </span>
-                            <div id="span-aprobadosUna">0</div>
+                            <div id="aprobadosUna">0</div>
                         </div>
                         <div class="d-flex">
                             <span class="fw-semibold me-1">Cantidad de alumnos que aprobaron dos materias: </span>
-                            <div id="span-viudas">0</div>
+                            <div id="aprobadosDos">0</div>
                         </div>
                     </section>
                 </article>

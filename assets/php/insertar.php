@@ -5,11 +5,27 @@ header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 header('Content-Type: text/html; charset=utf-8');
 header('Content-Type: application/json');
 
+function promedio($array){
+    $sumatoria = 0;
+    $promedio = 0;
+
+    if(count($array) > 0){
+        foreach($array as $nota){
+            $sumatoria += $nota;
+        }
+        $promedio = $sumatoria / count($array);
+    } else {
+        return "N/A";
+    }
+
+    return number_format($promedio, 1);
+}
+
 $results = array();
 $registros = array();
 
 $json_array = [];
-$empleado = [];
+$estudiante = [];
 $info = [];
 
 $numRegistros = 0;
@@ -17,121 +33,145 @@ $actual = "none";
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-if(isset($data['Nombre']) && isset($data['Edad']) && isset($data['EstadoCivil']) && isset($data['Sexo']) && isset($data['Sueldo'])){
+if(isset($data['Nombre']) && isset($data['Cedula']) && isset($data['notaMatematicas']) && isset($data['notaFisica']) && isset($data['notaProgramacion'])){
 
     // Tratamiento de datos y almacenamiento local en Arrays
 
     $nombre = $data['Nombre'];
-    $edad = $data['Edad'];
-    $edoCivil = $data['EstadoCivil'];
-    $sexo = $data['Sexo'];
-    $sueldo = $data['Sueldo'];
+    $cedula = $data['Cedula'];
+    $notaMatematicas = $data['notaMatematicas'];
+    $notaFisica = $data['notaFisica'];
+    $notaProgramacion = $data['notaProgramacion'];
 
-    if($sexo == "Masculino"){   // Definiendo el estado civil dependiendo del sexo
-        switch ($edoCivil) {
-            case "ec-1":
-                $edoCivil = "Soltero";
-                break;
-            case "ec-2":
-                $edoCivil = "Casado";
-                break;
-            case "ec-3":
-                $edoCivil = "Viudo";
-                break;
-        }
-    } else {
-        switch ($edoCivil) {
-            case "ec-1":
-                $edoCivil = "Soltera";
-                break;
-            case "ec-2":
-                $edoCivil = "Casada";
-                break;
-            case "ec-3":
-                $edoCivil = "Viuda";
-                break;
-        }
-    }
-
-    switch ($sueldo) {
-        case "sueldo-1":
-            $sueldo = "Menos de 1000 Bs. ";
-            break;
-        case "sueldo-2":
-            $sueldo = "Entre 1000 y 2500 Bs.";
-            break;
-        case "sueldo-3":
-            $sueldo = "Más de 2500 Bs.";
-            break;
-    }
-
-    $empleado = array(
+    $estudiante = array(
         "nombre" => $nombre,
-        "edad" => $edad,
-        "estadoCivil" => $edoCivil,
-        "sexo" => $sexo,
-        "sueldo" => $sueldo,
+        "cedula" => $cedula,
+        "notaMatematicas" => $notaMatematicas,
+        "notaFisica" => $notaFisica,
+        "notaProgramacion" => $notaProgramacion,
     );
 
     // Guardar datos localmente en un archivo
     $file = fopen('data.txt', 'a');
-    fwrite($file, serialize($empleado) . PHP_EOL);
+    fwrite($file, serialize($estudiante) . PHP_EOL);
     fclose($file);
 
     // Leer datos guardados en archivo local
     $archivo = fopen('data.txt', 'r');
 
     // Variables para almacenar datos solicitados
-    $edadPromedioHombres = 0;
-    $sumEdadesHombres = 0;
-    $total_hombres = 0;
-    $total_mujeres = 0;
-    $hombres_casados_2500 = 0;
-    $viudas_1000 = 0;
+    $cantidadAlumnos = 0;
+    $aprobaronTodas = 0;
+    $aprobaronUna = 0;
+    $aprobaronDos = 0;
 
+    // Matemáticas
+    $notasMath = array();
+    $aprobadosMath = 0;
+    $aplazadosMath = 0;
+    $notaMaxMath = 0;
+    
+    // Física
+    $notasFisica = array();
+    $aprobadosFisica = 0;
+    $aplazadosFisica = 0;
+    $notaMaxFisica = 0;
+    
+    // Programación
+    $notasProg = array();
+    $aprobadosProg = 0;
+    $aplazadosProg = 0;
+    $notaMaxProg = 0;
+    
     while (($line = fgets($archivo)) !== false) { // Leer cada línea en el archivo data.txt para extraer cada registro y agregarlo al array de registros
         $contenido = unserialize($line);
+        
+        if (isset($contenido['nombre']) && isset($contenido['cedula']) && isset($contenido['notaMatematicas']) && isset($contenido['notaFisica']) && isset($contenido['notaProgramacion'])) {
+            $materiasAprobadas = 0;
 
-        if (isset($contenido['nombre']) && isset($contenido['edad']) && isset($contenido['estadoCivil']) && isset($contenido['sexo']) && isset($contenido['sueldo'])) {
-            $empleado = array(
+            $estudiante = array(
                 "nombre" => $contenido['nombre'],
-                "edad" => $contenido['edad'],
-                "estadoCivil" => $contenido['estadoCivil'],
-                "sexo" => $contenido['sexo'],
-                "sueldo" => $contenido['sueldo'],
+                "cedula" => $contenido['cedula'],
+                "notaMatematicas" => $contenido['notaMatematicas'],
+                "notaFisica" => $contenido['notaFisica'],
+                "notaProgramacion" => $contenido['notaProgramacion'],
             );
 
-            if($empleado["sexo"] == "Femenino"){
-                $total_mujeres += 1;
-
-                if($empleado["estadoCivil"] == "Viuda" && $empleado["sueldo"] != "Menos de 1000 Bs. "){
-                    $viudas_1000 += 1;
-                }
+            // Procedimientos para cada materia
+            array_push($notasMath, $estudiante['notaMatematicas']);
+            if($estudiante['notaMatematicas'] > $notaMaxMath){
+                $notaMaxMath = $estudiante['notaMatematicas'];
+            }
+            if($estudiante['notaMatematicas'] >= 10){
+                $aprobadosMath += 1;
+                $materiasAprobadas += 1;
             } else {
-                $total_hombres += 1;
-                $sumEdadesHombres += $empleado["edad"];
+                $aplazadosMath += 1;
+            }
 
-                if($empleado["estadoCivil"] == "Casado" && $empleado["sueldo"] == "Más de 2500 Bs."){
-                    $hombres_casados_2500 += 1;
+            array_push($notasFisica, $estudiante['notaFisica']);
+            if($estudiante['notaFisica'] > $notaMaxFisica){
+                $notaMaxFisica = $estudiante['notaFisica'];
+            }
+            if($estudiante['notaFisica'] >= 10){
+                $aprobadosFisica += 1;
+                $materiasAprobadas += 1;
+            } else {
+                $aplazadosFisica += 1;
+            }
+
+            array_push($notasProg, $estudiante['notaProgramacion']);
+            if($estudiante['notaProgramacion'] > $notaMaxProg){
+                $notaMaxProg = $estudiante['notaProgramacion'];
+            }
+            if($estudiante['notaProgramacion'] >= 10){
+                $aprobadosProg += 1;
+                $materiasAprobadas += 1;
+            } else {
+                $aplazadosProg += 1;
+            }
+
+            if($materiasAprobadas > 0){
+                switch($materiasAprobadas){
+                    case 1:
+                        $aprobaronUna += 1;
+                        break;
+                    case 2:
+                        $aprobaronDos += 1;
+                        break;
+                    case 3:
+                        $aprobaronTodas += 1;
+                        break;
                 }
             }
 
-            array_push($registros, $empleado);
-            $numRegistros += 1;
+            array_push($registros, $estudiante);
+            $cantidadAlumnos += 1;
         }
     }
-    if($total_hombres > 0){
-        $edadPromedioHombres = $sumEdadesHombres / $total_hombres;
-        $edadPromedioHombres = floor($edadPromedioHombres);
-    }
+    $promedioMath = promedio($notasMath);
+    $promedioFisica = promedio($notasFisica);
+    $promedioProg = promedio($notasProg);
+
+    if($materiasAprobadas > 0){}
 
     // Información de respuesta
     $info = array(
-        "totalMujeres" => $total_mujeres,
-        "hombresCasados2500" => $hombres_casados_2500,
-        "viudasMas1000" => $viudas_1000,
-        "edadesPromedioHombres" => $edadPromedioHombres,
-        "totalHombres" => $total_hombres
+        "promedioMatematicas" => $promedioMath,
+        "promedioFisica" => $promedioFisica,
+        "promedioProgramacion" => $promedioProg,
+        "aprobadosMatematicas" => $aprobadosMath,
+        "aprobadosFisica" => $aprobadosFisica,
+        "aprobadosProgramacion" => $aprobadosProg,
+        "aplazadosMatematicas" => $aplazadosMath,
+        "aplazadosFisica" => $aplazadosFisica,
+        "aplazadosProg" => $aplazadosProg,
+        "notaMaxMatematicas" => $notaMaxMath,
+        "notaMaxFisica" => $notaMaxFisica,
+        "notaMaxProgramacion" => $notaMaxProg,
+        "aprobaronTodas" => $aprobaronTodas,
+        "aprobaronUna" => $aprobaronUna,
+        "aprobaronDos" => $aprobaronDos,
     );
     
     // Estableciendo mensajes de respuesta
@@ -140,7 +180,7 @@ if(isset($data['Nombre']) && isset($data['Edad']) && isset($data['EstadoCivil'])
     $json_array = array(
         "status" => "success",
         "message" => $message,
-        "registros" => (string)$numRegistros
+        "registros" => (string)$cantidadAlumnos
     );
     
     array_push($results, $json_array);
